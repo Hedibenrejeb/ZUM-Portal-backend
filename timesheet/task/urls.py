@@ -11,5 +11,4 @@ urlpatterns=[
      path('TaskByUser/<int:id>',views.GetTaskByUser.as_view(),name='ProjectByCreator'),
      path('TaskByCreator/<int:id>',views.GetTaskByCreator.as_view(),name='TaskByCreator'),
      path('TaskByProject/<int:id>',views.GetTaskByProject.as_view(),name='TaskByProject'),
-     path('getTask/<int:id>',views.getTaskApiView.as_view(),name='gettask'),
 ]
