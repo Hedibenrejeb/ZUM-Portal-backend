@@ -12,7 +12,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 
 
-
+#tttt
 
 class updateDestroyUserApiView(RetrieveUpdateDestroyAPIView):
     # authentication_classes = []
