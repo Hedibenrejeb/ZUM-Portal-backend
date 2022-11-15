@@ -32,7 +32,13 @@ class getTaskApiView(RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return self.queryset
 
-
+class getTaskApiView(RetrieveUpdateDestroyAPIView):
+    authentication_classes = []
+    queryset=Task.objects.all()
+    serializer_class = GetTasksUsers
+    lookup_field="id"
+    def get_queryset(self):
+        return self.queryset
 
 class updateDestroyTaskApiView(RetrieveUpdateDestroyAPIView):
     authentication_classes = []
