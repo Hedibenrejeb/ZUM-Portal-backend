@@ -1,7 +1,7 @@
 # from django.db import models
 from datetime import date, datetime
 from email.policy import default
-from typing_extensions import Required
+# from typing_extensions import Required
 from djongo import models 
 from authentication.models import User
 from authentication.serializers import userSerializer
