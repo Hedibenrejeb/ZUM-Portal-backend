@@ -86,20 +86,15 @@ WSGI_APPLICATION = 'timesheet.wsgi.application'
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'ZUM_PORTAL_DB',
-        'HOST': '127.0.0.1',
-        'PORT': 27017,
-        'CLIENT': {
-                'host': '127.0.0.1',
-                'port': 27017,
-                'password': 'password',
-                'authSource': 'authentication',
-
-            },
+        'default': {
+            'ENGINE': 'djongo',
+            'NAME': 'ZUM_PORTAL_DB',
+            'ENFORCE_SCHEMA': False,
+            'CLIENT': {
+                'host': 'mongodb+srv://zumportal:781228hediHEDI@cluster0.9sr1ysw.mongodb.net/test'
             }
-}  
+        }
+}
 
 MANGO_JWT_SETTINGS = {
     "db_host": "127.0.0.1",
