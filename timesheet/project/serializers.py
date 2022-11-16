@@ -5,14 +5,14 @@ from authentication.serializers import Registerserilaizer,UserAssginedToProjectS
 class ProjectSerilaizer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = ['name','description','starter_at','created_by','assigned_to','end_date','id',]
+        fields = ['name','description','matricule','starter_at','created_by','assigned_to','end_date','id',]
 
 class GetProjectSerilaizer(serializers.ModelSerializer):
     created_by = userSerializer(required = True)
     assigned_to = userSerializer(many=True)
     class Meta:
         model = Project
-        fields = ['name','description','status','starter_at','created_by','assigned_to','end_date','id',]
+        fields = ['name','description','matricule','status','starter_at','created_by','assigned_to','end_date','id',]
         depth = 1
 
 
@@ -23,7 +23,7 @@ class GetAllProjectSerilaizer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ['id','name','description','status','starter_at','created_by','assigned_to','end_date',]
+        fields = ['id','name','description','matricule','status','starter_at','created_by','assigned_to','end_date',]
 
         
 class UpdateProjectSerilaizer(serializers.ModelSerializer):
@@ -43,13 +43,13 @@ class GetProjectByUserSerilaizer(serializers.ModelSerializer):
     created_by_id = Registerserilaizer
     class Meta:
         model = Project
-        fields = ['id','name','starter_at','description','status','end_date','created_by_id',]
+        fields = ['id','name','starter_at','matricule','description','status','end_date','created_by_id',]
 
 
 class GetProjectBycreatorSerilaizer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = ['id','name','starter_at','description','status','end_date',]    
+        fields = ['id','name','starter_at','matricule','description','status','end_date',]    
 
    
 
@@ -58,7 +58,7 @@ class GetProjectBycreatorWithAffectedToSerilaizer(serializers.ModelSerializer):
     assigned_to = UserAssginedToProjectSerializer(many=True)
     class Meta:
         model = Project
-        fields = ['id','name','starter_at','description','status','end_date','assigned_to',]    
+        fields = ['id','name','starter_at','matricule','description','status','end_date','assigned_to',]    
 
 # class GetProjectBycreatorSerilaizer(serializers.ModelSerializer):
 #     # assigned_to = Registerserilaizer

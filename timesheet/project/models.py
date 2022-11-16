@@ -18,6 +18,7 @@ class Project(models.Model):
     ] 
     name = models.CharField(max_length=255,unique=True)
     description = models.CharField(max_length=500)
+    matricule = models.CharField(max_length=255,unique=True)
     status = models.CharField(max_length=50,choices=STATUS,default=ETAT_ACTIVE)
     starter_at = models.DateTimeField(null=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE,related_name="manager",null=True,blank=True)
