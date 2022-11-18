@@ -1,18 +1,12 @@
-from django.shortcuts import render
 from rest_framework.generics import GenericAPIView,UpdateAPIView,ListAPIView,RetrieveUpdateDestroyAPIView
-from rest_framework import response,status ,permissions
+from rest_framework import status ,permissions
 from rest_framework import generics,status,views
-from .serializers import  LoginSerializer,LogoutSerializer, UserAssginedToProjectSerializer,userSerializer,RegisterUserSerializer,Registerserilaizer
+from .serializers import  LoginSerializer,LogoutSerializer,userSerializer,RegisterUserSerializer,Registerserilaizer
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import permissions
 from .models import User
 from django.core.mail import EmailMultiAlternatives
-from django.contrib.sites.shortcuts import get_current_site
-from django.urls import reverse
-
-
-
 
 class updateDestroyUserApiView(RetrieveUpdateDestroyAPIView):
     # authentication_classes = []
@@ -30,25 +24,22 @@ class GetAllUser(ListAPIView):
     def get_queryset(self):
         return self.queryset.all()
 
-
 class GetAllUsers(ListAPIView):
     authentication_classes = []
     serializer_class = userSerializer
     queryset = User.objects.all()
     def get_queryset(self):
-
         return self.queryset.all()
+
 class UpdateAfterRegister(UpdateAPIView):
     authentication_classes = []
     serializer_class = Registerserilaizer
     lookup_field = "id"
     queryset = User.objects.all()
 
-
 class RegisterUserViaEmail(GenericAPIView):
     authentication_classes = []
     serializer_class = RegisterUserSerializer
-
     def post(self, request):
         user = request.data
         serilaizer = self.serializer_class(data=user)
@@ -77,7 +68,6 @@ class LoginAPIView(generics.GenericAPIView):
 
 class AuthUserAPIView(generics.GenericAPIView):
     permission_classes=(permissions.IsAuthenticated,)
-
     def get(self,request):
         user=User.objects.get(pk=request.user.pk)
         serializer=userSerializer(user)
@@ -91,6 +81,3 @@ class LogoutAPIView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
- 

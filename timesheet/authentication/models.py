@@ -1,5 +1,4 @@
 from email.policy import default
-# from typing_extensions import Required
 from django.db import models 
 from django.contrib.auth.models import(AbstractBaseUser,BaseUserManager,) 
 from rest_framework_simplejwt.tokens import RefreshToken 
@@ -7,7 +6,6 @@ import jwt
 from django.conf import settings
 from datetime import datetime,timedelta
 from django.contrib.auth.models import(AbstractBaseUser,BaseUserManager,AbstractUser,PermissionsMixin)
-
 # Create your models here. 
 
 class UserManager(BaseUserManager): 

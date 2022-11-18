@@ -1,4 +1,3 @@
-from dataclasses import fields
 from rest_framework import serializers
 from authentication.models import User 
 from django.contrib import auth
@@ -47,7 +46,6 @@ class LoginSerializer(serializers.ModelSerializer):
             'token' :user.tokens(),
           #  'access':user.tokens()['access'],
           #  'refresh':user.tokens()['refresh'], 
- 
         }
     class Meta: 
         model =User 
@@ -57,9 +55,7 @@ class LoginSerializer(serializers.ModelSerializer):
     def validate(self,attrs):
         email=attrs.get('email','')
         password=attrs.get('password','')
-        
         user=auth.authenticate(email=email,password=password)
-
         if not user :
             raise AuthenticationFailed('Invalid credentials, try again ')
         """  if not user.is_active :
@@ -76,10 +72,7 @@ class LoginSerializer(serializers.ModelSerializer):
             'tokens': user.tokens(),
             'token' :user.token
         }
-
-
         return super().validate(attrs)
-
 
 class LogoutSerializer(serializers.Serializer): 
     refresh=serializers.CharField()
