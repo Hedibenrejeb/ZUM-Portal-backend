@@ -41,6 +41,7 @@ class UpdateProjectSerilaizer(serializers.ModelSerializer):
 
 class GetProjectByUserSerilaizer(serializers.ModelSerializer):
     created_by_id = Registerserilaizer
+    # assigned_to = UserAssginedToProjectSerializer(many=True)
     class Meta:
         model = Project
         fields = ['id','name','starter_at','matricule','description','status','end_date','created_by_id',]
@@ -49,7 +50,7 @@ class GetProjectByUserSerilaizer(serializers.ModelSerializer):
 class GetProjectBycreatorSerilaizer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = ['id','name','starter_at','matricule','description','status','end_date',]    
+        fields = ['id','name','starter_at','description','status','end_date',]    
 
    
 
@@ -58,7 +59,7 @@ class GetProjectBycreatorWithAffectedToSerilaizer(serializers.ModelSerializer):
     assigned_to = UserAssginedToProjectSerializer(many=True)
     class Meta:
         model = Project
-        fields = ['id','name','starter_at','matricule','description','status','end_date','assigned_to',]    
+        fields = ['id','name','starter_at','description','status','end_date','assigned_to',]    
 
 # class GetProjectBycreatorSerilaizer(serializers.ModelSerializer):
 #     # assigned_to = Registerserilaizer
