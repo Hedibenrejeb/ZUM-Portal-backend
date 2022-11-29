@@ -49,6 +49,11 @@ class GetProjectByUser(ListAPIView):
     def get_queryset(self):
         return Project.objects.values().filter(assigned_to = self.kwargs['id'])
 
+class GetSommeProjectByUser(ListAPIView):
+    authentication_classes=[]
+    serializer_class = GetProjectByUserSerilaizer
+    def get_queryset(self):
+        return Project.objects.values().filter(assigned_to = self.kwargs['id']).sum()
 
 
 class GetProjectByCreator(ListAPIView):

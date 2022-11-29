@@ -11,6 +11,8 @@ urlpatterns = [
     path('listproject/',views.ListallProject.as_view(),name='listallproject'),
     path('GetProjectByUser/<int:id>',views.GetProjectByUser.as_view(),name='GetProjectByUser'),
     path('GetProjectByCreator/<int:id>',views.GetProjectByCreator.as_view(),name='GetProjectByCreator'),
+    path('GetSommeProjectByUser/<int:id>',views.GetSommeProjectByUser.as_view(),name='GetSommeProjectByUser'),
+
     # path('GetProjectByCreatorWithaffectedTo/<int:id>',views.GetProjectByCreatorWithaffectedTo.as_view(),name='GetProjectByCreatorWithaffectedTo'),
 
     

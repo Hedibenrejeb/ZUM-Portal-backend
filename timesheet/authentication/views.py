@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.generics import GenericAPIView,UpdateAPIView,ListAPIView,RetrieveUpdateDestroyAPIView
 from rest_framework import response,status ,permissions
 from rest_framework import generics,status,views
-from .serializers import  LoginSerializer,LogoutSerializer, UserAssginedToProjectSerializer,userSerializer,RegisterUserSerializer,Registerserilaizer
+from .serializers import  LoginSerializer,LogoutSerializer, UserAssginedToProjectSerializer, UserProfileSerializer,userSerializer,RegisterUserSerializer,Registerserilaizer
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import permissions
@@ -15,7 +15,7 @@ from django.urls import reverse
 
 
 class updateDestroyUserApiView(RetrieveUpdateDestroyAPIView):
-    # authentication_classes = []
+    authentication_classes = []
     queryset=User.objects.all()
     serializer_class = userSerializer
     lookup_field="id"
@@ -91,6 +91,13 @@ class LogoutAPIView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class GetUserById(ListAPIView):
+    authentication_classes=[]
+    lookup_field="id"
+    serializer_class = UserProfileSerializer
+    def get_queryset(self):
+        return User.objects.values().filter(id = self.kwargs['id'])
 
 
  

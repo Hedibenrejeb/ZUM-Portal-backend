@@ -39,6 +39,9 @@ class User(AbstractBaseUser,PermissionsMixin):
     ] 
     firstname=models.CharField(max_length=255,null=True)  
     lastname=models.CharField(max_length=255,null=True)  
+    Mobile=models.CharField(max_length=255,null=True) 
+    Location=models.CharField(max_length=255,null=True) 
+    Experience=models.CharField(max_length=255,null=True)  
     role=models.CharField(max_length=2,choices=ROLES_CHOICES,default=SIMPLE_USER) 
     email=models.EmailField(max_length=255,unique=True)
     USERNAME_FIELD ='email'  
@@ -60,3 +63,4 @@ class User(AbstractBaseUser,PermissionsMixin):
             'exp':datetime.utcnow()+timedelta(hours=24)},
                 settings.SECRET_KEY,algorithm='HS256')
         return token
+

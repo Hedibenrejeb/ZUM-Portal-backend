@@ -31,7 +31,12 @@ class UserAssginedToProjectSerializer(serializers.ModelSerializer):
 class userSerializer(serializers.ModelSerializer): 
     class Meta:
         model = User
-        fields =('id','firstname','email', 'lastname','role', )  
+        fields =('id','firstname','email', 'lastname','Location','Mobile','Experience','role', )
+
+class UserProfileSerializer(serializers.ModelSerializer): 
+    class Meta:
+        model = User
+        fields =('id','firstname','email', 'lastname','Location','Mobile','Experience',)  
 
 class LoginSerializer(serializers.ModelSerializer): 
     email=serializers.EmailField(max_length=255,min_length=3)

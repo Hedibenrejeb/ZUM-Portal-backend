@@ -14,4 +14,5 @@ urlpatterns=[
     path('updateafterregister/<str:id>', views.UpdateAfterRegister.as_view(), name='UpdateAfterRegister'),
     path('updateUser/<int:id>',views.updateDestroyUserApiView.as_view(),name='updateuser'),
     path('deleteUser/<int:id>',views.updateDestroyUserApiView.as_view(),name='deleteuser'),
+    path('GetUserById/<int:id>',views.GetUserById.as_view(),name='GetUserById'),
 ]
