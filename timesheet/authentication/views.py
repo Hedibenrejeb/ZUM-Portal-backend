@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.generics import GenericAPIView,UpdateAPIView,ListAPIView,RetrieveUpdateDestroyAPIView
 from rest_framework import response,status ,permissions
 from rest_framework import generics,status,views
-from .serializers import  LoginSerializer,LogoutSerializer, UserAssginedToProjectSerializer, UserProfileSerializer,userSerializer,RegisterUserSerializer,Registerserilaizer
+from .serializers import  LoginSerializer,LogoutSerializer, ProfileSerializer, UserAssginedToProjectSerializer, UserPhotoSerializer, UserProfileSerializer,userSerializer,RegisterUserSerializer,Registerserilaizer
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import permissions
@@ -10,6 +10,7 @@ from .models import User
 from django.core.mail import EmailMultiAlternatives
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 
@@ -26,7 +27,6 @@ class GetAllUser(ListAPIView):
     authentication_classes = []
     serializer_class = userSerializer
     queryset = User.objects.all()
-    
     def get_queryset(self):
         return self.queryset.all()
 
@@ -36,8 +36,8 @@ class GetAllUsers(ListAPIView):
     serializer_class = userSerializer
     queryset = User.objects.all()
     def get_queryset(self):
-
         return self.queryset.all()
+
 class UpdateAfterRegister(UpdateAPIView):
     authentication_classes = []
     serializer_class = Registerserilaizer
@@ -48,7 +48,6 @@ class UpdateAfterRegister(UpdateAPIView):
 class RegisterUserViaEmail(GenericAPIView):
     authentication_classes = []
     serializer_class = RegisterUserSerializer
-
     def post(self, request):
         user = request.data
         serilaizer = self.serializer_class(data=user)
@@ -77,7 +76,6 @@ class LoginAPIView(generics.GenericAPIView):
 
 class AuthUserAPIView(generics.GenericAPIView):
     permission_classes=(permissions.IsAuthenticated,)
-
     def get(self,request):
         user=User.objects.get(pk=request.user.pk)
         serializer=userSerializer(user)
@@ -98,6 +96,29 @@ class GetUserById(ListAPIView):
     serializer_class = UserProfileSerializer
     def get_queryset(self):
         return User.objects.values().filter(id = self.kwargs['id'])
+
+class SavePhoto(GenericAPIView):
+    authentication_classes=[]
+    queryset=User.objects.all()
+    serializer_class = UserPhotoSerializer
+    def post(self, request,*args, **kwargs):
+        photo = request.data['photo']
+        User.objects.values().filter(id = self.kwargs['id']).update(photo=photo)
+        return Response(status=status.HTTP_200_OK)
+
+class UpdateProfile(UpdateAPIView):
+    authentication_classes = []
+    # parser_classes= [MultiPartParser,FormParser]
+    serializer_class = ProfileSerializer
+    lookup_field="id"
+    queryset=User.objects.all()
+
+
+ 
+    
+
+
+        
 
 
  

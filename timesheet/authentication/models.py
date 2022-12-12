@@ -28,6 +28,9 @@ class UserManager(BaseUserManager):
        user.save()  
        return user 
 
+def upload_path(instance, filname):
+    return '/'.join(['images', str(instance.firstname), filname])
+
 class User(AbstractBaseUser,PermissionsMixin): 
     MANAGER ='MG' 
     SIMPLE_USER='SU' 
@@ -44,6 +47,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     Experience=models.CharField(max_length=255,null=True)  
     role=models.CharField(max_length=2,choices=ROLES_CHOICES,default=SIMPLE_USER) 
     email=models.EmailField(max_length=255,unique=True)
+    photo = models.ImageField(upload_to=upload_path,blank=True, null=True,max_length=255)
     USERNAME_FIELD ='email'  
     REQUIRED_FIELDS =['role',] 
     objects = UserManager() 
@@ -55,6 +59,8 @@ class User(AbstractBaseUser,PermissionsMixin):
             'refresh':str(refresh),  
             'access':str(refresh.access_token) 
         }
+
+    
 
     @property
     def token(self):

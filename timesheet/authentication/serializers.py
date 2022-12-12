@@ -31,12 +31,12 @@ class UserAssginedToProjectSerializer(serializers.ModelSerializer):
 class userSerializer(serializers.ModelSerializer): 
     class Meta:
         model = User
-        fields =('id','firstname','email', 'lastname','Location','Mobile','Experience','role', )
+        fields =('id','firstname','email', 'lastname','Location','Mobile','Experience','role',)
 
 class UserProfileSerializer(serializers.ModelSerializer): 
     class Meta:
         model = User
-        fields =('id','firstname','email', 'lastname','Location','Mobile','Experience',)  
+        fields =('id','firstname','email', 'lastname','Location','Mobile','Experience','photo',)  
 
 class LoginSerializer(serializers.ModelSerializer): 
     email=serializers.EmailField(max_length=255,min_length=3)
@@ -100,3 +100,15 @@ class LogoutSerializer(serializers.Serializer):
          RefreshToken(self.token).blacklist()
         except TokenError :
             self.fail('bad_token')
+
+class UserPhotoSerializer(serializers.ModelSerializer):
+    photo = serializers.ImageField(required=False)
+    class Meta:
+        model = User
+        fields =('id','photo',)
+
+class ProfileSerializer(serializers.ModelSerializer): 
+    photo = serializers.ImageField(required=False)
+    class Meta:
+        model = User
+        fields =('id','firstname','email', 'lastname','Location','Mobile','Experience','role','photo',)
