@@ -4,6 +4,10 @@ from django.contrib import auth
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken,TokenError
 from .models import User
+from django.utils.encoding import smart_str,force_str,smart_bytes,DjangoUnicodeDecodeError
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth import password_validation
 
 class RegisterUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,13 +34,14 @@ class UserAssginedToProjectSerializer(serializers.ModelSerializer):
 class userSerializer(serializers.ModelSerializer): 
     class Meta:
         model = User
-        fields =('id','firstname','email', 'lastname','role', )  
+        fields =('id','firstname','email', 'lastname','role',)  
 
 class LoginSerializer(serializers.ModelSerializer): 
     email=serializers.EmailField(max_length=255,min_length=3)
     password=serializers.CharField(max_length=68,min_length=6,write_only=True)
     firstname=serializers.CharField(max_length=68,min_length=6,read_only=True)
     lastname=serializers.CharField(max_length=68,min_length=6,read_only=True)
+    role=serializers.CharField(max_length=68,min_length=6,read_only=True)
     tokens=serializers.SerializerMethodField()
 
     def get_tokens(self,obj):
@@ -88,3 +93,8 @@ class LogoutSerializer(serializers.Serializer):
          RefreshToken(self.token).blacklist()
         except TokenError :
             self.fail('bad_token')
+
+class ChangePasswordSerializer(serializers.Serializer):
+    model = User
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)

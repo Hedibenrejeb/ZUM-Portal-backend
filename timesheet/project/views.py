@@ -49,15 +49,11 @@ class GetProjectByUser(ListAPIView):
     def get_queryset(self):
         return Project.objects.values().filter(assigned_to = self.kwargs['id'])
 
-
-
 class GetProjectByCreator(ListAPIView):
     authentication_classes=[]
     serializer_class = GetProjectBycreatorSerilaizer
     def get_queryset(self):
         return Project.objects.values().filter(created_by = self.kwargs['id'])
-
-
 
 class GetProjectByCreatorWithaffectedTo(ListAPIView):
     authentication_classes=[]
