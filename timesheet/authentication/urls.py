@@ -13,4 +13,7 @@ urlpatterns=[
     path('updateUser/<int:id>',views.updateDestroyUserApiView.as_view(),name='updateuser'),
     path('deleteUser/<int:id>',views.updateDestroyUserApiView.as_view(),name='deleteuser'),
     path('change-password/<int:id>', views.ChangePasswordView.as_view(), name='change-password'),
+    path('request-reset-email/',views.PasswordRestEmail.as_view(), name="request-reset-email"),
+    # path('password-reset/<uidb64>/<token>/',views.PasswordTokenCheck.as_view(), name='password-reset-confirm'),
+    path('password-reset-complete/',views.SetNewPasswordApiView.as_view(), name='password-reset-complete')
 ]

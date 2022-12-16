@@ -1,3 +1,4 @@
+import os
 from rest_framework.generics import GenericAPIView,UpdateAPIView,ListAPIView,RetrieveUpdateDestroyAPIView
 from rest_framework import status ,permissions
 from rest_framework import generics,status,views
@@ -8,6 +9,7 @@ from rest_framework import permissions
 from .models import User
 from django.core.mail import EmailMultiAlternatives
 
+from django.db.models.query_utils import Q
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import smart_bytes
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -118,3 +120,36 @@ class ChangePasswordView(generics.UpdateAPIView):
             }
             return Response(response)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PasswordRestEmail(generics.GenericAPIView):
+    authentication_classes = []
+    serializer_class = ResetPPasswordEmailSerializer
+    def post(self,request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = request.data['email']
+        print('*****************************',email)
+        if User.objects.values().filter(email= email):
+            print('hello')
+            user = User.objects.get(email=email)
+            print('**************',user)
+            uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
+            token = PasswordResetTokenGenerator().make_token(user)
+            current_site = get_current_site(request=request).domain
+            relativelink = reverse('password-reset-complete')
+            # redirect_url = request.data.get('redirect_url','')
+            absurl = 'http://'+current_site +relativelink
+            email_body = "<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8' /></head><body><div class=''><div style='background:#f9f9f9'><div style='margin:0px auto;max-width:640px;background:transparent'><table role='presentation' cellpadding='0' cellspacing='0'style='font-size:0px;width:100%;background:transparent' align='center' border='0'><tbody><tr><td style='text-align:center;vertical-align:top;direction:ltr;font-size:0px;padding:40px 0px'><div aria-labelledby='mj-column-per-100' class='m_4819380286727024960mj-column-per-100'style='vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%'><table role='presentation' cellpadding='0' cellspacing='0' width='100%'border='0'><tbody><tr><td style='word-break:break-word;font-size:0px;padding:0px'align='center'><table role='presentation' cellpadding='0' cellspacing='0'style='border-collapse:collapse;border-spacing:0px'align='center' border='0'><tbody><tr><td style='width:138px'></td></tr></tbody></table></td></tr></tbody></table></div></td></tr></tbody></table></div><div style='max-width:640px;margin:0 auto;border-radius:4px;overflow:hidden'><div style='margin:0px auto;max-width:640px;background:#ffffff'><table role='presentation' cellpadding='0' cellspacing='0'style='font-size:0px;width:100%;background:#ffffff' align='center' border='0'><tbody><tr><td style='text-align:center;vertical-align:top;direction:ltr;font-size:0px;padding:40px 50px'><table role='presentation' cellpadding='0' cellspacing='0' width='100%' border='0'><tbody><tr><td style='word-break:break-word;font-size:0px;padding:0px'><div style='color:#737f8d;font-family:Whitney,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif;font-size:16px;line-height:24px;text-align:left'><h2 style='font-family:Whitney,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif;font-weight:500;font-size:20px;color:#4f545c;letter-spacing:0.27px'align='center'><b>Welcome to ZUM PORTAL</b></h2></div></td></tr><tr><td style='word-break:break-word;font-size:0px;padding:30px 0px'><p style='font-size:1px;margin:0px auto;border-top:1px solid #dcddde;width:100%'></p></td></tr><tr><td style='word-break:break-word;font-size:0px;padding:0px'><div style='color:#737f8d;font-family:Whitney,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif;font-size:16px;line-height:24px;text-align:left' ><p align='center'>Click on this button to change your password</p></div></td></tr><tr><td style='word-break:break-word;font-size:0px;padding:10px 25px;padding-top:20px'align='center'><table role='presentation' cellpadding='0' cellspacing='0' style='border-collapse:separate'align='center' border='0'><tbody><tr><td style='border:none;border-radius:3px;color:white;padding:15px 19px' align='center' valign='middle'><form action="+absurl+"><input value='Reset password'type='submit' align='center' style='padding:12px 24px;color:#ffffff;font-weight:400;display:inline-block;text-decoration:none;font-size:16px;line-height:1.25em;border-color:#0a66c2;background-color:#4b71ed;border-radius:34px;border-width:1px;border-style:solid'></form></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></div></div><div style='margin:0px auto;max-width:640px;background:transparent'><table role='presentation' cellpadding='0' cellspacing='0' style='font-size:0px;width:100%;background:transparent' align='center' border='0'><tbody><tr><td style='text-align:center;vertical-align:top;direction:ltr;font-size:0px;padding:20px 0px'><div aria-labelledby='mj-column-per-100' class='m_4819380286727024960mj-column-per-100' style='vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%'><table role='presentation' cellpadding='0' cellspacing='0' width='100%' border='0'><tbody><tr><td style='word-break:break-word;font-size:0px;padding:0px'align='center' ><div style='color:#99aab5;font-family:Whitney,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif;font-size:12px;line-height:24px;text-align:center'><strong>Copyright &copy; ZUM-IT</strong><br>Sent with &#10084; from ZUM-PORTAL.</div></td></tr></tbody></table></div></td></tr></tbody></table></div></div></div></body></html>"
+            data = {'email_body': email_body, 'email_to': user.email,'email_subject': 'Reset your password'}
+            email = EmailMultiAlternatives(subject = data['email_subject'], body = 'email_body', to =[data['email_to']])
+            email.attach_alternative(email_body, "text/html")
+            email.send()
+            return Response({'success':'We have sent you a link to reset your password','uidb64': uidb64, 'token': token},status=status.HTTP_200_OK)
+        return Response({'error': 'User does not exist'},status=status.HTTP_404_NOT_FOUND)
+
+class SetNewPasswordApiView(generics.GenericAPIView):
+    serializer_class = SetNewPasswordSerialize
+    def patch(self,request):
+        serilaizer = self.serializer_class(data=request.data)
+        serilaizer.is_valid(raise_exception=True)
+        return Response({'success':True,'message':'Password resert success'},status=status.HTTP_200_OK)
