@@ -15,4 +15,6 @@ urlpatterns=[
     path('SavePhoto/<int:id>',views.SavePhoto.as_view(),name='SavePhoto'),
     path('deleteUser/<int:id>',views.updateDestroyUserApiView.as_view(),name='deleteuser'),
     path('GetUserById/<int:id>',views.GetUserById.as_view(),name='GetUserById'),
+    path('profileavatar/<int:id>',views.ProfileAvatar.as_view(),name="profile_avatar"),
+
 ]

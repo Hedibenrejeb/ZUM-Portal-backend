@@ -7,8 +7,15 @@ import jwt
 from django.conf import settings
 from datetime import datetime,timedelta
 from django.contrib.auth.models import(AbstractBaseUser,BaseUserManager,AbstractUser,PermissionsMixin)
+from PIL import Image
+from django.utils.translation import gettext_lazy as _
 
 # Create your models here. 
+
+def upload_to(instance, filename):
+
+    return 'users/{filename}'.format(filename=filename)
+
 
 class UserManager(BaseUserManager): 
     def create_user(self,email,role,password=None): 
@@ -47,7 +54,8 @@ class User(AbstractBaseUser,PermissionsMixin):
     Experience=models.CharField(max_length=255,null=True)  
     role=models.CharField(max_length=2,choices=ROLES_CHOICES,default=SIMPLE_USER) 
     email=models.EmailField(max_length=255,unique=True)
-    photo = models.ImageField(upload_to=upload_path,blank=True, null=True,max_length=255)
+    #photo = models.ImageField(upload_to=upload_path,blank=True, null=True,max_length=255)
+    photo = models.ImageField(_('photo'),upload_to=upload_to,default='users/default.png')
     USERNAME_FIELD ='email'  
     REQUIRED_FIELDS =['role',] 
     objects = UserManager() 
@@ -59,6 +67,13 @@ class User(AbstractBaseUser,PermissionsMixin):
             'refresh':str(refresh),  
             'access':str(refresh.access_token) 
         }
+    def save(self, *args, **kwargs):
+         super().save(*args, **kwargs)
+         img = Image.open(self.photo.path) # Open image using self
+         if img.height > 300 or img.width > 300:
+             new_img = (300, 300)
+             img.thumbnail(new_img)
+             img.save(self.photo.path)  # saving image at the same path
 
     
 

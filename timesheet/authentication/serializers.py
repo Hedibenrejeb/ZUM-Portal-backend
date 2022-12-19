@@ -29,14 +29,34 @@ class UserAssginedToProjectSerializer(serializers.ModelSerializer):
         fields = ('id','email',)
 
 class userSerializer(serializers.ModelSerializer): 
+    # photo = serializers.ImageField(required=False)
     class Meta:
         model = User
-        fields =('id','firstname','email', 'lastname','Location','Mobile','Experience','role',)
+        fields =('id','firstname','email','lastname','Location','Mobile','Experience','role','photo')
 
 class UserProfileSerializer(serializers.ModelSerializer): 
+    # photo = serializers.ImageField(required=True)
     class Meta:
         model = User
-        fields =('id','firstname','email', 'lastname','Location','Mobile','Experience','photo',)  
+        fields =('id','firstname','email','lastname','Location','Mobile','Experience','photo')  
+
+class ProfileAvatarSerializer(serializers.ModelSerializer):
+    photo = serializers.ImageField(required=False)
+    class Meta:
+        model=User
+        fields=('photo',)
+    def update(self,instance,validated_data):
+        print("0000001",validated_data)
+        instance.photo=validated_data.pop('photo',instance.photo)
+        instance.save()
+        return instance
+
+class ProfileSerializer(serializers.ModelSerializer): 
+    photo = serializers.ImageField(required=False)
+    class Meta:
+        model = User
+        fields =('id','firstname','email', 'lastname','Location','Mobile','Experience','role','photo')
+
 
 class LoginSerializer(serializers.ModelSerializer): 
     email=serializers.EmailField(max_length=255,min_length=3)
@@ -44,7 +64,6 @@ class LoginSerializer(serializers.ModelSerializer):
     firstname=serializers.CharField(max_length=68,min_length=6,read_only=True)
     lastname=serializers.CharField(max_length=68,min_length=6,read_only=True)
     tokens=serializers.SerializerMethodField()
-
     def get_tokens(self,obj):
         # 1/ get the real user from obj
         user =User.objects.get(email=obj['email'])
@@ -56,13 +75,11 @@ class LoginSerializer(serializers.ModelSerializer):
         }
     class Meta: 
         model =User 
-        fields=['id','firstname','lastname','email','role','password','tokens','token',]
+        fields=['id','firstname','lastname','email','role','password','tokens','token','photo']
         read_only_fields =['token']
-    
     def validate(self,attrs):
         email=attrs.get('email','')
         password=attrs.get('password','')
-        
         user=auth.authenticate(email=email,password=password)
 
         if not user :
@@ -79,7 +96,8 @@ class LoginSerializer(serializers.ModelSerializer):
             'lastname': user.lastname,
             'firstname': user.firstname,
             'tokens': user.tokens(),
-            'token' :user.token
+            'token' :user.token,
+            'photo':user.photo,
         }
 
 
@@ -107,8 +125,10 @@ class UserPhotoSerializer(serializers.ModelSerializer):
         model = User
         fields =('id','photo',)
 
-class ProfileSerializer(serializers.ModelSerializer): 
-    photo = serializers.ImageField(required=False)
-    class Meta:
-        model = User
-        fields =('id','firstname','email', 'lastname','Location','Mobile','Experience','role','photo',)
+
+
+# class testPhotoSerializer(serializers.ModelSerializer):
+#     photo = serializers.ImageField(required=False)
+#     class Meta:
+#         model = User
+#         fields =('photo',)        
