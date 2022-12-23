@@ -35,6 +35,7 @@ class GetAllUser(ListAPIView):
 
 class GetAllUsers(ListAPIView):
     authentication_classes = []
+    pagination_class = None
     serializer_class = userSerializer
     queryset = User.objects.all()
     def get_queryset(self):
@@ -143,8 +144,9 @@ class PasswordRestEmail(generics.GenericAPIView):
         return Response({'error': 'User does not exist'},status=status.HTTP_404_NOT_FOUND)
 
 class SetNewPasswordApiView(generics.GenericAPIView):
+    authentication_classes = []
     serializer_class = SetNewPasswordSerialize
-    def put(self,request):
+    def patch(self,request):
         serilaizer = self.serializer_class(data=request.data)
         serilaizer.is_valid(raise_exception=True)
         return Response({'success':True,'message':'Password resert success'},status=status.HTTP_200_OK)
